@@ -40,7 +40,7 @@ std::string Spice::GetErrorAndReset(void) noexcept
     }
 
     std::vector<char> Message(MaxErrorLength, 0);
-    getmsg_c("LONG", Message.size(), Message.data());
+    getmsg_c("LONG", static_cast<int>(Message.size()), Message.data());
     reset_c();
     return std::string(Message.data());
 }
