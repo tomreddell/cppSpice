@@ -46,16 +46,16 @@ int main()
     KernelSet Kernels{};
     Kernels.LoadAuxillary("path/to/naif0012.tls"); // Load naif0012.tls
     Kernels.LoadEphemeris("path/to/de430.bsp");    // Load de430.bsp
-	
-	// Display any thrown errors and exit
-	if (Kernels.HasFailed() == true)
-	{
-		for (const auto& Message : Kernels.GetErrorLog())
-		{
-			puts(Message.data());
-			return 1;
-		}
-	}
+    
+    // Display any thrown errors and exit
+    if (Kernels.HasFailed() == true)
+    {
+        for (const auto& Message : Kernels.GetErrorLog())
+        {
+            puts(Message.data());
+            return 1;
+        }
+    }
 
     // Display contents
     for (const auto& Meta : Kernels.GetMetadata())        
@@ -79,13 +79,13 @@ int main()
     // Calculate the ephemeris of the moon, relative to the centre of the earth in the J2000
     // reference frame
     EphemerisState LunarState = CalcEphemerisState(Inputs, EpochTime);
-	
-	// Catch any errors from a failed calculation
-	if (LunarState.CalculationSuccess == false)
-	{
-		puts(GetErrorAndReset().c_str());
-		return 1;
-	}
+    
+    // Catch any errors from a failed calculation
+    if (LunarState.CalculationSuccess == false)
+    {
+        puts(GetErrorAndReset().c_str());
+        return 1;
+    }
 
     printf("Lunar Position (km) = (%g, %g, %g)\n", 
         LunarState.PosX, 
