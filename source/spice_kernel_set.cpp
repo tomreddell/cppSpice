@@ -64,8 +64,6 @@ Spice::KernelSet::KernelSet(void) noexcept
 
 bool Spice::KernelSet::LoadEphemeris(const std::string& Kernel) noexcept
 {
-    mKernels.push_back(Kernel);
-
     // Loads Kernel    
     furnsh_c(Kernel.data());
 
@@ -74,6 +72,9 @@ bool Spice::KernelSet::LoadEphemeris(const std::string& Kernel) noexcept
         mErrorLog.push_back(GetErrorAndReset());
         return false;
     }
+
+    // Store kernal ID
+    mKernels.push_back(Kernel);    
 
     // Introspect contents
     spkobj_c(Kernel.data(), &SpiceIDs);
@@ -137,10 +138,10 @@ bool Spice::KernelSet::LoadAuxillary(const std::string& Kernel) noexcept
 
 Spice::KernelSet::~KernelSet() noexcept
 {
+    UnsetErrorFlag();
     UnloadAll();
 
-    // Display any error messages which may have flown under the radar
-    // or which triggered on unloading
+    // Display any error messages which triggered on unloading
     for (const auto& Message : mErrorLog)    
     {
         puts(Message.data());
