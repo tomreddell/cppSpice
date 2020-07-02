@@ -230,7 +230,7 @@ namespace Spice
     /* 
      * Return a string of the Spice object ID
      */
-    std::string GetObjectString(ObjectID ID);
+    std::string GetObjectString(ObjectID ID) noexcept;
 
     /* 
      * List of built in reference frames
@@ -360,7 +360,7 @@ namespace Spice
     /* 
      * Returns a string of the Spice frame ID
      */
-    std::string GetFrameString(FrameID ID);
+    std::string GetFrameString(FrameID ID) noexcept;
 
     /* 
      * Built in aberration corrections
@@ -382,5 +382,5 @@ namespace Spice
     /* 
      * Returns a string of the Spice aberration correction ID
      */
-    std::string GetAbCorrectionString(AbCorrectionID ID);
+    std::string GetAbCorrectionString(AbCorrectionID ID) noexcept;
 }

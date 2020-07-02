@@ -2,7 +2,7 @@
 
 #include <cstdio>
 
-std::string Spice::GetObjectString(ObjectID ID)
+std::string Spice::GetObjectString(ObjectID ID) noexcept
 {
     switch (ID)
     {   
@@ -207,7 +207,7 @@ std::string Spice::GetObjectString(ObjectID ID)
 }
 
 
-std::string Spice::GetFrameString(FrameID ID)
+std::string Spice::GetFrameString(FrameID ID) noexcept
 {
     switch (ID)    
     {
@@ -337,7 +337,7 @@ std::string Spice::GetFrameString(FrameID ID)
     }
 }
 
-std::string Spice::GetAbCorrectionString(AbCorrectionID ID)
+std::string Spice::GetAbCorrectionString(AbCorrectionID ID) noexcept
 {
     switch (ID)    
     {

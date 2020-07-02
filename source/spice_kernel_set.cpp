@@ -1,5 +1,6 @@
 #include "spice_kernel_set.hpp"
 #include "spice_time.hpp"
+#include "spice_error.hpp"
 
 // Load spice headers in platform independent way
 extern "C"
@@ -34,7 +35,7 @@ constexpr size_t MAX_WINDOW_SIZE = 2000;
 SPICEINT_CELL (SpiceIDs, MAX_OBJECTS);
 SPICEDOUBLE_CELL (Coverage, MAX_WINDOW_SIZE);
 
-std::string Spice::ObjectMetadata::PrettyString(void) const
+std::string Spice::ObjectMetadata::PrettyString(void) const noexcept
 {
     std::string Result = "Spice Object: " + std::to_string(ID) 
         + " Loaded in Kernel " + static_cast<std::string>(Kernel) + "\n";
@@ -50,22 +51,38 @@ std::string Spice::ObjectMetadata::PrettyString(void) const
     return Result;
 }
 
-Spice::KernelSet::KernelSet()
+Spice::KernelSet::KernelSet(void) noexcept
 {
-    // Disable abort on error
-    SpiceChar ErrorMode[] = "REPORT";
-    erract_c("SET", sizeof(ErrorMode), ErrorMode);
+    if (sNoAbortFlagSet == false)    
+    {
+        // Disable abort on error
+        SpiceChar ErrorMode[] = "RETURN";
+        erract_c("SET", sizeof(ErrorMode), ErrorMode);
+        sNoAbortFlagSet = true;
+    }
 }
 
-bool Spice::KernelSet::Load(const std::string& Kernel)
+bool Spice::KernelSet::LoadEphemeris(const std::string& Kernel) noexcept
 {
     mKernels.push_back(Kernel);
 
     // Loads Kernel    
     furnsh_c(Kernel.data());
 
+    if (failed_c() == true)    
+    {
+        mErrorLog.push_back(GetErrorAndReset());
+        return false;
+    }
+
     // Introspect contents
     spkobj_c(Kernel.data(), &SpiceIDs);
+
+    if (failed_c() == true)    
+    {
+        mErrorLog.push_back(GetErrorAndReset());
+        return false;
+    }    
 
     for (SpiceInt Index = 0; Index < card_c(&SpiceIDs); ++Index)
     {
@@ -93,16 +110,53 @@ bool Spice::KernelSet::Load(const std::string& Kernel)
 
         // Store this object metadata
         mMeta.insert(std::make_pair(Meta.ID, std::move(Meta)));
-    }    
+    }  
+
+    if (failed_c() == true)    
+    {
+        mErrorLog.push_back(GetErrorAndReset());
+        return false;
+    }        
 
     // TODO: Add error handling
     return true;
 }
 
-Spice::KernelSet::~KernelSet()
+bool Spice::KernelSet::LoadAuxillary(const std::string& Kernel) noexcept
+{
+    // Loads Kernel    
+    furnsh_c(Kernel.data());
+
+    if (failed_c() == true)    
+    {
+        mErrorLog.push_back(GetErrorAndReset());
+        return false;
+    }      
+
+    return true;
+}
+
+Spice::KernelSet::~KernelSet() noexcept
+{
+    UnloadAll();
+}
+
+void Spice::KernelSet::UnloadAll(void) noexcept
 {
     for(const auto& Kernel : mKernels)
     {
         unload_c(Kernel.data());
+
+        if (failed_c() == true)    
+        {
+            mErrorLog.push_back(GetErrorAndReset());
+        }      
     }
 }
+
+void Spice::KernelSet::UnsetErrorFlag(void) noexcept
+{
+    mErrorLog.clear();
+}
+
+bool Spice::KernelSet::sNoAbortFlagSet = false;

@@ -34,7 +34,7 @@ namespace Spice
         std::vector<TimeInterval> Intervals;
 
         // Get the metadata as a pretty formatted string
-        std::string PrettyString(void) const;        
+        std::string PrettyString(void) const noexcept;        
     };
 
     /* 
@@ -46,25 +46,46 @@ namespace Spice
     {
     public:    
         // Default Constructor
-        KernelSet();
+        KernelSet(void) noexcept;
         
         // Unload all when the kernel set goes out of scope
-        ~KernelSet();
+        ~KernelSet(void) noexcept;
         
         // Disable Copy Constructor
         KernelSet(const KernelSet& Other) = delete;
 
-        // Loads a spice kernel
-        bool Load(const std::string& Kernel);
+        // Loads a spice ephemeris kernel (.bsp)
+        bool LoadEphemeris(const std::string& Kernel) noexcept;
+
+        // Loads a non .bsp spice kernel
+        bool LoadAuxillary(const std::string& Kernel) noexcept;
 
         // Get a reference to the contained metadata
-        const std::map<int, ObjectMetadata>& GetMetadata(void) const {return mMeta;}
+        const std::map<int, ObjectMetadata>& GetMetadata(void) const noexcept {return mMeta;}
+
+        // Unloads all stored kernels
+        void UnloadAll(void) noexcept;
+
+        // Returns true if one or more errors have been thrown
+        bool HasFailed(void) const noexcept {return (mErrorLog.size() > 0);}
+
+        // Gets a list of all thrown errors
+        const std::vector<std::string>& GetErrorLog(void) const noexcept {return mErrorLog;}
+
+        // Clears the error log and resets the spice error state
+        void UnsetErrorFlag(void) noexcept;
         
     private:
         // A list of all kernel files loaded
         std::vector<std::string_view> mKernels;
 
         // All object metadata
-        std::map<int, ObjectMetadata> mMeta;
+        std::map<int, ObjectMetadata> mMeta;       
+
+        // List of thrown errors
+        std::vector<std::string> mErrorLog;        
+
+        // Global flag indicating spice error reporting status   
+        static bool sNoAbortFlagSet;
     };
 }
