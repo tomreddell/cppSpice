@@ -84,6 +84,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/extern/spice")
 
 target_sources(CppSpice
     PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/spice_error.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/spice_ephemeris.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/spice_time.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/spice_label_map.cpp
