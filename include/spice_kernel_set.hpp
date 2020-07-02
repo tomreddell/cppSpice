@@ -25,7 +25,7 @@ namespace Spice
     struct ObjectMetadata
     {
         // Spice Kernel from which this object was loaded
-        std::string_view Kernel;
+        std::string Kernel;
 
         // Unique spice object integer ID
         int ID = std::numeric_limits<int>::min();

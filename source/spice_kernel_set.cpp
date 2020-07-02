@@ -38,7 +38,7 @@ SPICEDOUBLE_CELL (Coverage, MAX_WINDOW_SIZE);
 std::string Spice::ObjectMetadata::PrettyString(void) const noexcept
 {
     std::string Result = "Spice Object: " + std::to_string(ID) 
-        + " Loaded in Kernel " + static_cast<std::string>(Kernel) + "\n";
+        + " Loaded in Kernel " + Kernel + "\n";
     
     Result += "*** Coverage Summary ***\n";
     for (size_t Index = 0; Index < Intervals.size(); ++Index)
@@ -118,7 +118,6 @@ bool Spice::KernelSet::LoadEphemeris(const std::string& Kernel) noexcept
         return false;
     }        
 
-    // TODO: Add error handling
     return true;
 }
 
@@ -139,6 +138,13 @@ bool Spice::KernelSet::LoadAuxillary(const std::string& Kernel) noexcept
 Spice::KernelSet::~KernelSet() noexcept
 {
     UnloadAll();
+
+    // Display any error messages which may have flown under the radar
+    // or which triggered on unloading
+    for (const auto& Message : mErrorLog)    
+    {
+        puts(Message.data());
+    }    
 }
 
 void Spice::KernelSet::UnloadAll(void) noexcept

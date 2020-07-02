@@ -29,6 +29,9 @@ namespace Spice
 
         // Time taken for light to travel between source object and reference (s)        
         double LightTime = 0.0;
+
+        // Calculation completed successfully (true/false)
+        bool CalculationSuccess = false;        
     };
 
     /* 

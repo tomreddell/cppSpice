@@ -43,6 +43,12 @@ Spice::EphemerisState Spice::CalcEphemerisState(const EphemerisInputs& Inputs, d
              Buffer.data(), 
              &LightTimeSeconds);
 
+    // Calculation failure
+    if (failed_c() == true)             
+    {
+        return EphemerisState{.CalculationSuccess = false};
+    }
+
     // Return in a more modern format
     return EphemerisState{
         .PosX = Buffer[0], 
@@ -51,6 +57,7 @@ Spice::EphemerisState Spice::CalcEphemerisState(const EphemerisInputs& Inputs, d
         .VelX = Buffer[3], 
         .VelY = Buffer[4], 
         .VelZ = Buffer[5],
-        .LightTime = LightTimeSeconds
+        .LightTime = LightTimeSeconds,
+        .CalculationSuccess = true
     }; 
 }
