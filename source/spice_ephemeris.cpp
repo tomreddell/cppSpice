@@ -44,7 +44,7 @@ Spice::EphemerisState Spice::CalcEphemerisState(const EphemerisInputs& Inputs, d
              &LightTimeSeconds);
 
     // Calculation failure
-    if (failed_c() == true)             
+    if (failed_c() == SPICETRUE)             
     {
         return EphemerisState{.CalculationSuccess = false};
     }

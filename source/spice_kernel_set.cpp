@@ -67,7 +67,7 @@ bool Spice::KernelSet::LoadEphemeris(const std::string& Kernel) noexcept
     // Loads Kernel    
     furnsh_c(Kernel.data());
 
-    if (failed_c() == true)    
+    if (failed_c() == SPICETRUE)    
     {
         mErrorLog.push_back(GetErrorAndReset());
         return false;
@@ -79,7 +79,7 @@ bool Spice::KernelSet::LoadEphemeris(const std::string& Kernel) noexcept
     // Introspect contents
     spkobj_c(Kernel.data(), &SpiceIDs);
 
-    if (failed_c() == true)    
+    if (failed_c() == SPICETRUE)    
     {
         mErrorLog.push_back(GetErrorAndReset());
         return false;
@@ -113,7 +113,7 @@ bool Spice::KernelSet::LoadEphemeris(const std::string& Kernel) noexcept
         mMeta.insert(std::make_pair(Meta.ID, std::move(Meta)));
     }  
 
-    if (failed_c() == true)    
+    if (failed_c() == SPICETRUE)    
     {
         mErrorLog.push_back(GetErrorAndReset());
         return false;
@@ -127,7 +127,7 @@ bool Spice::KernelSet::LoadAuxillary(const std::string& Kernel) noexcept
     // Loads Kernel    
     furnsh_c(Kernel.data());
 
-    if (failed_c() == true)    
+    if (failed_c() == SPICETRUE)    
     {
         mErrorLog.push_back(GetErrorAndReset());
         return false;
@@ -154,7 +154,7 @@ void Spice::KernelSet::UnloadAll(void) noexcept
     {
         unload_c(Kernel.data());
 
-        if (failed_c() == true)    
+        if (failed_c() == SPICETRUE)    
         {
             mErrorLog.push_back(GetErrorAndReset());
         }      
