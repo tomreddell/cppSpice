@@ -12,7 +12,7 @@ namespace Spice
      */
     struct TimeInterval
     {
-        // Interval start time (s)    
+         
         double Start = 0.0;
 
         // Interval stop time (s)
@@ -77,7 +77,7 @@ namespace Spice
         
     private:
         // A list of all kernel files loaded
-        std::vector<std::string_view> mKernels;
+        std::vector<std::string> mKernels;
 
         // All object metadata
         std::map<int, ObjectMetadata> mMeta;       
