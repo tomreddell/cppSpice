@@ -26,7 +26,7 @@ extern "C"
     #include "SpiceZim.h"
 }
 
-double Spice::Date2Epoch(const std::string_view& Date)
+double Spice::Date2Epoch(const std::string& Date)
 {
     SpiceDouble EpochTime = 0.0;     
     str2et_c(Date.data(), &EpochTime);
